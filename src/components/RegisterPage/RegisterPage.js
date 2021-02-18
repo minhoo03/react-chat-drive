@@ -1,14 +1,28 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useRef } from 'react'
+import firebase from '../../firebase'
 
 function RegisterPage() {
-    const { register, watch, errors } = useForm({mode:'onChange'})
+    const { register, watch, errors, handleSubmit } = useForm({mode:'onChange'})
+    const [errorFromSubmit, setErrorFromSubmit] = useState("")
 
     const password = useRef()
     password.current = watch('password')
-    console.log(watch('email','name','password', password.current))
+    
+
+    const onSubmit = async (data) => {
+        try {
+            let createdUser = await firebase.auth().createUserWithEmailAndPassword(data.email, data.password)
+        } catch (error) {
+            setErrorFromSubmit(error.message)
+            setTimeout(() => {
+                setErrorFromSubmit("")
+            }, 5000);
+        }
+    }
+
 
     return (
         <div className="authWrap">
@@ -16,7 +30,7 @@ function RegisterPage() {
                 <h3>Register</h3>
             </div>
             <form 
-            // onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(onSubmit)}
             >
                 <label>Email</label>
                 <input name="email" type="email"
@@ -46,6 +60,7 @@ function RegisterPage() {
                 />
                 {errors.password_Required && <p>The password is not correct.</p>}
 
+                {errorFromSubmit && <p>{errorFromSubmit}</p>}
                 <input type="submit" />
                 <Link style={{color:"gray", textDecoration:"none"}}>이미 아이디가 있다면..</Link>
             </form>
