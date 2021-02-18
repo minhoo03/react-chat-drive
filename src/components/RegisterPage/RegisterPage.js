@@ -85,7 +85,7 @@ function RegisterPage() {
 
 
                 <input type="submit" disabled={loading} />
-                <Link style={{color:"gray", textDecoration:"none"}}>이미 아이디가 있다면..</Link>
+                <Link style={{color:"gray", textDecoration:"none"}} to="login">이미 아이디가 있다면..</Link>
             </form>
         </div>
     )
