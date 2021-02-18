@@ -12,22 +12,34 @@ import { useEffect } from "react";
 
 import firebase from './firebase'
 
+import { useDispatch, useSelector } from 'react-redux'
+import { setUser } from './redux/actions/user_action'
+
 function App(props) {
 
   let history = useHistory()
+  let dispatch = useDispatch()
+  let isLoading = useSelector(state => state.user.isLoading)
 
-  // App.js는 Router로 감싸져 있기에 history 사용 가능
-  useEffect(() => {
+
+  useEffect(() => { // App.js는 Router로 감싸져 있기에 history 사용 가능
     firebase.auth().onAuthStateChanged(user => {
       if(user) { // 로그인 된 유저
         history.push('/')
-        console.log('로그인 됨')
+        
+        dispatch(setUser(user)) // 로그인 된 유저 정보 -> redux
       } else {
         history.push('/login')
-        console.log('로그인 안됨')
+        
       }
     })
   }, [])
+
+  if(isLoading) {
+    return (
+      <div>...loading</div>
+    ) 
+  }
 
   return (
       <Switch>
