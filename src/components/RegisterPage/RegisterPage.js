@@ -23,6 +23,12 @@ function RegisterPage() {
                 displayName: data.name,
                 photoURL: `http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`,
             })
+
+            await firebase.database().ref('users').child(createdUser.user.uid).set({
+                displayName: createdUser.user.displayName,
+                photoURL: createdUser.user.photoURL
+            })
+
             setLoading(false)
         } catch (error) {
             setErrorFromSubmit(error.message)
