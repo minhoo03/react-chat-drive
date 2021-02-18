@@ -11,6 +11,7 @@ import ReduxThunk from 'redux-thunk'
 import Reducer from './redux/reducers'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 // store 생성 전 promise와 함수 처리 미들웨어
 const createStoreWithMiddleware = applyMiddleware(promiseMiddleware, ReduxThunk)(createStore)
@@ -21,7 +22,9 @@ ReactDOM.render(
     <Provider store={createStoreWithMiddleware(Reducer,
       window.__REDUX_DEVTOOLS_EXTENSION__ &&
       window.__REDUX_DEVTOOLS_EXTENSION__())}>
-      <App />
+        <Router>
+          <App />
+        </Router>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')
