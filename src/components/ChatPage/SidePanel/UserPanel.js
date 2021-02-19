@@ -1,12 +1,15 @@
 import React, { useRef } from 'react'
 import { AiFillWechat } from 'react-icons/ai'
 import { Dropdown, Container, Row, Col, Image } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import firebase from '../../../firebase'
+
+import { setPhotoURL } from '../../../redux/actions/user_action'
 
 function UserPanel() {
 
     const user = useSelector(state => state.user.currentUser)
+    const dispatch = useDispatch()
 
 
     const handleLogout = () => {
@@ -30,10 +33,26 @@ function UserPanel() {
         // save storage
         try{
             let uploadTaskSnapshot = await firebase.storage().ref()
-            .child(`user_image/${user.uid}`)
-            .put(file, metadata)
+                .child(`user_image/${user.uid}`)
+                .put(file, metadata)
+
+                let downloadURL = await uploadTaskSnapshot.ref.getDownloadURL()
+
+            // save photoURL in auth()
+            await firebase.auth().currentUser.updateProfile({
+                photoURL: downloadURL
+            })
+
+            // save photoURL in Redux
+            dispatch(setPhotoURL(downloadURL))
+
+            // save photoURL in DB
+            await firebase.database().ref('users')
+                .child(user.uid)
+                .update({image: downloadURL})
+
         } catch(error) {
-            
+            alert(error)
         }
     }
 
