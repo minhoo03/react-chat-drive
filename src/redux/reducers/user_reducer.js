@@ -3,7 +3,7 @@ import {
 } from '../actions/types'
 
 const initalUserState = {
-    currrentUser: null,
+    currentUser: null,
     isLoading: true
 }
 
@@ -12,7 +12,7 @@ export default function(state = initalUserState, action) {
         case SET_USER:
             return {
                 ...state,
-                currrentUser: action.payload,
+                currentUser: action.payload,
                 isLoading: false
             }
         
