@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { AiFillWechat } from 'react-icons/ai'
 import { Dropdown, Container, Row, Col, Image } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
@@ -8,8 +8,22 @@ function UserPanel() {
 
     const user = useSelector(state => state.user.currentUser)
 
+
     const handleLogout = () => {
         firebase.auth().signOut()
+    }
+
+
+    const inputOpenImageRef = useRef()
+
+
+    const handleOpenImage = () => {
+        inputOpenImageRef.current.click()
+    }
+
+
+    const handleUploadImage = async (e) => {
+
     }
 
     return (
@@ -26,7 +40,7 @@ function UserPanel() {
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                        <Dropdown.Item href="#/action-1">
+                        <Dropdown.Item href="#/action-1" onClick={handleOpenImage}>
                             프로필 사진 변경
                         </Dropdown.Item>
                         <Dropdown.Item href="#/action-2" onClick={handleLogout}>
@@ -35,6 +49,8 @@ function UserPanel() {
                     </Dropdown.Menu>
                 </Dropdown>
             </div>
+
+            <input accept="image/jpeg, image/png" type="file" style={{display: 'none'}} ref={inputOpenImageRef} onChange={handleUploadImage} />
         </div>
     )
 }
