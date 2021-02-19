@@ -2,10 +2,15 @@ import React from 'react'
 import { AiFillWechat } from 'react-icons/ai'
 import { Dropdown, Container, Row, Col, Image } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
+import firebase from '../../../firebase'
 
 function UserPanel() {
 
     const user = useSelector(state => state.user.currentUser)
+
+    const handleLogout = () => {
+        firebase.auth().signOut()
+    }
 
     return (
         <div>
@@ -21,8 +26,12 @@ function UserPanel() {
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                        <Dropdown.Item href="#/action-1">로그아웃</Dropdown.Item>
-                        <Dropdown.Item href="#/action-2">프로필 사진 변경</Dropdown.Item>
+                        <Dropdown.Item href="#/action-1">
+                            프로필 사진 변경
+                        </Dropdown.Item>
+                        <Dropdown.Item href="#/action-2" onClick={handleLogout}>
+                            로그아웃
+                        </Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
             </div>

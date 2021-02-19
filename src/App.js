@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import firebase from './firebase'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { setUser } from './redux/actions/user_action'
+import { setUser, clearUser } from './redux/actions/user_action'
 
 function App(props) {
 
@@ -30,6 +30,7 @@ function App(props) {
         dispatch(setUser(user)) // 로그인 된 유저 정보 -> redux
       } else {
         history.push('/login')
+        dispatch(clearUser(user))
         
       }
     })
