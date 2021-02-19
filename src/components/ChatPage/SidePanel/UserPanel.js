@@ -23,7 +23,18 @@ function UserPanel() {
 
 
     const handleUploadImage = async (e) => {
+        const file = e.target.files[0]
 
+        const metadata = file.type
+
+        // save storage
+        try{
+            let uploadTaskSnapshot = await firebase.storage().ref()
+            .child(`user_image/${user.uid}`)
+            .put(file, metadata)
+        } catch(error) {
+            
+        }
     }
 
     return (
