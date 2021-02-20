@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import firebase from '../../../firebase'
 
 import { AiOutlineSmile } from 'react-icons/ai'
 import { FaPlus } from 'react-icons/fa'
@@ -9,12 +11,64 @@ export class ChatRooms extends Component {
 
 
     state = { 
-        show: false
+        show: false,
+        name: '',
+        description: '',
+        chatRoomsRef: firebase.database().ref('chatRooms')
     }
 
 
     handleClose = () => this.setState({show: false})
     handleShow = () => this.setState({show: true})
+
+
+    handleSubmit = (e) => {
+        e.preventDefault()
+
+        const { name, description } = this.state
+
+        if (this.isFormValid(name, description)) {
+            this.addChatRoom()
+        }
+    }
+
+
+    isFormValid = (name, description) => {
+        return name && description
+    }
+
+
+    addChatRoom = async () => {
+
+        const key = this.state.chatRoomsRef.push().key
+        const { name, description } = this.state
+        const { user } = this.props
+
+        // Created Obj
+        const newChatRoom = {
+            id: key,
+            name,
+            description,
+            createdBy: {
+                name: user.displayName,
+                image: user.photoURL
+            }
+        }
+
+        // Send DB
+        try {
+            await this.state.chatRoomsRef.child(key).update(newChatRoom)
+
+            this.setState({
+                name: '',
+                description: '',
+                show: false
+            })
+
+        } catch (error) {
+            alert(error)
+        }
+    }
 
 
     render() {
@@ -41,15 +95,19 @@ export class ChatRooms extends Component {
                     </Modal.Header>
 
                     <Modal.Body>
-                        <Form>
+                        <Form onSubmit={this.handleSubmit}>
                             <Form.Group controlId="formBasicEmail">
                                 <Form.Label>Title</Form.Label>
-                                <Form.Control type="text" placeholder="Enter a chat room name" />
+                                <Form.Control type="text" placeholder="Enter a chat room name"
+                                    onChange={ (e) => this.setState({name: e.target.value})}
+                                />
                             </Form.Group>
 
                             <Form.Group controlId="formBasicPassword">
                                 <Form.Label>Description</Form.Label>
-                                <Form.Control type="text" placeholder="Enter a chat room description" />
+                                <Form.Control type="text" placeholder="Enter a chat room description"
+                                    onChange={ (e) => this.setState({description: e.target.value})}
+                                />
                             </Form.Group>
                         </Form>
                     </Modal.Body>
@@ -59,8 +117,8 @@ export class ChatRooms extends Component {
                             Close
                         </Button>
 
-                        <Button variant="primary" onClick={this.handleClose}>
-                            Save Changes
+                        <Button variant="primary" onClick={this.handleSubmit}>
+                            Create
                         </Button>
                     </Modal.Footer>
                 </Modal>
@@ -70,4 +128,9 @@ export class ChatRooms extends Component {
     }
 }
 
-export default ChatRooms
+const mapToStateProps = state => {
+    return {
+        user: state.user.currentUser
+    }
+}
+export default connect(mapToStateProps)(ChatRooms)
