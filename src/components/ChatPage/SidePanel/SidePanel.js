@@ -20,7 +20,7 @@ function SidePanel() {
             <ChatRooms />
 
             <DirectMessages />
-            
+
             <Favorited />
         </div>
     )

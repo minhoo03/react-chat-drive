@@ -6,7 +6,7 @@ function ChatPage() {
     return (
         <div style={{display: 'flex'}}>
             <div>
-                <SidePanel />
+                <SidePanel style={{width:'300px'}} />
             </div>
             <div style={{width:'100%'}}>
                 <MainPanel />
