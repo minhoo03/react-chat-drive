@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import firebase from '../../../firebase'
+import { setCurrentChatRoom } from '../../../redux/actions/chatRoom_action'
 
 import { AiOutlineSmile } from 'react-icons/ai'
 import { FaPlus } from 'react-icons/fa'
@@ -15,7 +16,9 @@ export class ChatRooms extends Component {
         name: '',
         description: '',
         chatRoomsRef: firebase.database().ref('chatRooms'),
-        chatRooms: []
+        chatRooms: [],
+        firstLoad: true,
+        activeChatRoomId: ''
     }
 
 
@@ -23,15 +26,30 @@ export class ChatRooms extends Component {
         this.addChatRoomsListeners()
     }
 
-
+    // DB의 ChatRoom을 state로
     addChatRoomsListeners = () => {
         let chatRoomsArray = []
 
         this.state.chatRoomsRef.on("child_added", DataSnapshot => {
             chatRoomsArray.push(DataSnapshot.val())
 
-            this.setState({chatRooms: chatRoomsArray})
-        } )
+            this.setState({chatRooms: chatRoomsArray}, () => {
+                this.setFirstChatRoom()
+            })
+        })
+    }
+
+
+    setFirstChatRoom = () => {
+        const firstChatRoom = this.state.chatRooms[0]
+
+        if(this.state.firstLoad && this.state.chatRooms.length > 0) {
+            this.props.dispatch(setCurrentChatRoom(firstChatRoom))
+            this.setState({activeChatRoomId: firstChatRoom.id})
+        }
+
+        // 새로고침을 하지 않는 이상 firstChatRoom이 반복되지 않는다.
+        this.setState({firstLoad: false})
     }
 
 
@@ -87,12 +105,18 @@ export class ChatRooms extends Component {
         }
     }
 
-
+    // state의 ChatRoom을 map
     renderChatRooms = (chatRooms) => {
         return chatRooms.length > 0 &&
         chatRooms.map(room => {
-            return <li># {room.name}</li>
+            return <li key={room.id} onClick={() => this.changeChatRoom(room)} style={{backgroundColor: room.id == this.state.activeChatRoomId && '#ffffff45'}}># {room.name}</li>
         })
+    }
+
+
+    changeChatRoom = (room) => {
+        this.props.dispatch(setCurrentChatRoom(room))
+        this.setState({activeChatRoomId: room.id})
     }
 
 
