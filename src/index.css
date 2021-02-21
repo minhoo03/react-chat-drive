@@ -128,3 +128,17 @@ body {
     padding: 10px 20px;
     border-radius: 4px;
 }
+
+.message-from-button {
+    background-color: #7a84eb;
+    color: white;
+    text-transform: uppercase;
+    font-size: 16px;
+    letter-spacing: 4px;
+    border: none;
+    padding: 4px;
+}
+
+.message-from-button:hover {
+    background-color: #6772e9;
+}
