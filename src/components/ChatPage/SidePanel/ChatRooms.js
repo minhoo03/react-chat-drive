@@ -26,6 +26,11 @@ export class ChatRooms extends Component {
         this.addChatRoomsListeners()
     }
 
+    
+    componentWillMount() {
+        this.state.chatRoomsRef.off()
+    }
+
     // DB의 ChatRoom을 state로
     addChatRoomsListeners = () => {
         let chatRoomsArray = []
