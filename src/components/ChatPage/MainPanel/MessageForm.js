@@ -3,7 +3,7 @@ import firebase from '../../../firebase'
 import { Col, Form, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 
-function MeesageForm() {
+function MessageForm() {
 
     const chatRoom = useSelector(state => state.chatRoom.currentChatRoom)
     const user = useSelector(state => state.user.currentUser)
@@ -89,4 +89,4 @@ function MeesageForm() {
     )
 }
 
-export default MeesageForm
+export default MessageForm

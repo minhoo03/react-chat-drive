@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Message from './Message'
-import MeesageForm from './MeesageForm'
-import MeesageHeader from './MeesageHeader'
+import MessageForm from './MessageForm'
+import MessageHeader from './MessageHeader'
 import { connect } from 'react-redux'
 import firebase from '../../../firebase'
 
@@ -11,33 +11,38 @@ export class MainPanel extends Component {
 
     state = {
         messages: [],
-        messagesRef: firebase.database().ref("messages"),
+        messageRef: firebase.database().ref("messages"),
         messagesLoading: true
     }
 
-
-    componeneDidMount() {
-        const { chatRoom } = this.props
-        if(chatRoom){
+    // 각 방의 채팅 구분
+    componentDidMount() {
+        const {chatRoom} = this.props
+        if(chatRoom) {
             this.addMessagesListeners(chatRoom.id)
         }
     }
 
-    
+    // DB 변동 O => state에 msg 담음
     addMessagesListeners = (chatRoomId) => {
-        let messageArray = []
-        this.state.messagesRef.child(chatRoomId).on('child_added', DataSnapshot => {
-            messageArray.push(DataSnapshot.val())
-            this.setState({messages: messageArray, messagesLoading: false})
-        })
+        let messagesArr = []
+        this.state.messageRef.child(chatRoomId).on("child_added", snapShot => {
+            messagesArr.push(snapShot.val())
+            this.setState({ 
+                messages: messagesArr,
+                messagesLoading: false
+            })
+        })  
     }
 
 
-    renderMessages = messages => {
-        return messages.length > 0 && messages.map(message => {
-            return <Message key={message.timestamp} message={message} user={this.props.user} />
-        })
-    }
+
+    // state의 메세지를 컴포넌트에 보냄
+    renderMessages = (messages) => 
+        messages.length > 0 && messages.map(message => (
+            <Message key={message.timestamp} message={message} user={this.props.user} />
+    ))
+    
 
 
     render() {
@@ -46,7 +51,7 @@ export class MainPanel extends Component {
 
         return (
             <div style={{width: '95%', margin:'0 auto', paddding: '2rem 2rem 0 2rem'}}>
-                <MeesageHeader />
+                <MessageHeader />
     
                 <div style={{
                     width: '100%',
@@ -60,7 +65,7 @@ export class MainPanel extends Component {
                     {this.renderMessages(messages)}
                 </div>
     
-                <MeesageForm />
+                <MessageForm />
             </div>
         )
     }

@@ -4,7 +4,7 @@ import { FaLock } from 'react-icons/fa'
 import { MdFavorite } from 'react-icons/md'
 import { BiSearchAlt2 } from 'react-icons/bi'
 
-function MeesageHeader() {
+function MessageHeader() {
     return (
         <div style={{
             width: '100%',
@@ -41,4 +41,4 @@ function MeesageHeader() {
     )
 }
 
-export default MeesageHeader
+export default MessageHeader
